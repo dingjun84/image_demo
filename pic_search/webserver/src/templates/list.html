@@ -1,0 +1,20 @@
+<html>
+<head>
+    
+</head>
+<body>
+    <H2>列表：</H2>
+    {% for p in imgpaths %}
+
+            <img src="{{ p }}">
+
+    {% endfor %}
+<hr />
+<div>
+    <a href="/">首页</a>
+</div>
+<div>
+    <a href="/api/v1/list?start={{ next_start }}&end={{ next_end }}">下一页</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<html>
+<head></head>
+<body>
+<div>
+    <h3>查询图片</h3>
+    <form method="post" action="/api/v1/search" enctype="multipart/form-data">
+        <input type="file" size="32" name="file">
+        <input type="hidden" value="10" name="Num">
+        <input type="submit" name="提交">
+    </form>
+
+    <h3>上传文件：</h3>
+    {% if searchimg %}
+    <img src="/searchimg/{{ searchimg }}" width="100px" />
+    {% endif %}
+</div>
+<h3>查询结果：</h3>
+<H2>列表：</H2>
+    {% for p in imgpaths %}
+
+            <div style="border: 1px"><span>{{ p[1] }}</span><span><img width="150px" src="{{ p[0] }}"></span></div>
+
+    {% endfor %}
+<hr />
+<div>
+    <a href="/api/v1/list">列表</a>
+</div>
+
+</body>
+</html>
