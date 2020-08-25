@@ -26,5 +26,14 @@
     <a href="/api/v1/list">列表</a>
 </div>
 
+<div>
+    <h3>提交图片建索引</h3>
+    <form method="post" action="/api/v1/train_single" enctype="multipart/form-data">
+        <input type="file" size="32" name="file">
+        <input type="hidden" value="10" name="Num">
+        <input type="submit" name="提交">
+    </form>
+</div>
+
 </body>
 </html>

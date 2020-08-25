@@ -1,12 +1,13 @@
 import os
 import os.path as path
+from datetime import datetime
 import logging
 from common.config import DATA_PATH, DEFAULT_TABLE
 from common.const import UPLOAD_PATH
 from common.const import input_shape
 from common.const import default_cache_dir
 from service.train import do_train
-from service.search import do_search
+from service.search import do_search,do_index
 from service.count import do_count
 from service.delete import do_delete
 from service.theardpool import thread_runner
@@ -76,24 +77,30 @@ def do_train_api():
     except Exception as e:
         return "Error with {}".format(e)
 
-@app.route('/api/v1/train', methods=['POST'])
-def do_train_api():
+@app.route('/api/v1/train_single', methods=['POST'])
+def do_train_single_image():
     args = reqparse.RequestParser(). \
         add_argument('Table', type=str). \
-        add_argument('File', type=str). \
         parse_args()
     table_name = args['Table']
-    file_path = args['File']
-    try:
-        thread_runner(1, do_train, table_name, file_path)
-        filenames = os.listdir(file_path)
-        if not os.path.exists(DATA_PATH):
-            os.mkdir(DATA_PATH)
-        for filename in filenames:
-            shutil.copy(file_path + '/' + filename, DATA_PATH)
-        return "Start"
-    except Exception as e:
-        return "Error with {}".format(e)
+
+    file = request.files.get('file', "")
+    if not file:
+        return "no file data", 400
+    if not file.name:
+        return "need file name", 400
+    if file:
+        filename = secure_filename(datetime.now().isoformat().replace(":", ".") + "_" + file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+
+    ids = do_index(table_name, file_path, model, graph, sess)
+    if len(ids) > 0:
+        shutil.copy(file_path, DATA_PATH)
+        print("cp ",file_path," to ",DATA_PATH)
+    result = dict()
+    result.update(filename,ids[0])
+    return jsonify(result)
 
 @app.route("/api/v1/list",methods=['post',"get"])
 def img_list():
