@@ -99,7 +99,7 @@ def do_train_single_image():
         shutil.copy(file_path, DATA_PATH)
         print("cp ",file_path," to ",DATA_PATH)
     result = dict()
-    result.update(filename,ids[0])
+    result[filename]=ids[0]
     return jsonify(result)
 
 @app.route("/api/v1/list",methods=['post',"get"])
