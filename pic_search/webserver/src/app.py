@@ -1,7 +1,7 @@
 import os
 import os.path as path
 from datetime import datetime
-import logging
+import logging as log
 from common.config import DATA_PATH, DEFAULT_TABLE
 from common.const import UPLOAD_PATH
 from common.const import input_shape
@@ -96,6 +96,8 @@ def do_train_single_image():
 
     ids = do_index(table_name, file_path, model, graph, sess)
     if len(ids) > 0:
+        if not os.path.exists(DATA_PATH):
+            os.mkdir(DATA_PATH)
         shutil.copy(file_path, DATA_PATH)
         print("cp ",file_path," to ",DATA_PATH)
     result = dict()
